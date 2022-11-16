@@ -1,0 +1,32 @@
+Inside src/ folder, store fastqc.sh file and sample name file "basenames-295.txt", note here 295 is the total number of samples in the file
+
+fastqc.sh
+
+```
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 24
+#SBATCH --mem=700g
+#SBATCH --mail-user=yifeik3@illinois.edu
+#SBATCH --mail-type=END,FAIL
+#SBATCH -J raw-fastqc
+#SBATCH --array=1-295
+#SBATCH -D /home/n-z/yifeik3/Ynsect2021_R/Ynsect-Fecal-microbial-2021/src/
+#SBATCH -p normal
+
+## MAKE SURE TO REPLACE THE 'X's ABOVE WITH YOUR INFORMATION (there are two places to do this)
+
+#Load the program needed; name may change in future so check each time with 'module avail FastQC'
+# on command line
+module load FastQC/0.11.8-Java-1.8.0_152
+
+#Set up variable to pull base file names and make output directory
+line=$(sed -n -e "$SLURM_ARRAY_TASK_ID p" basenames-295.txt)
+
+#Can use echo statements to put into .out files to help check on progress and diagnose
+# locations of problems
+echo "starting fastqc"
+fastqc -o ../results/fastqc/ ../data/raw-seq/fecal-dataset/V4_515F_New_V4_806R_New-${line}_*.fastq
+echo "fastqc finished"
+
+```
