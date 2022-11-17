@@ -1,4 +1,5 @@
-Cyberduck login:
+## Cyberduck login:
+
 Choose option SFTP(SSH)
 
 Server:
@@ -13,7 +14,7 @@ Username (your NetId):
 yifeik3
 ```
 
-Biocluster login: (Mac user)
+## Biocluster login: (Mac user)
 
 Open Terminal
 ssh netid@biologin.igb.illinois.edu

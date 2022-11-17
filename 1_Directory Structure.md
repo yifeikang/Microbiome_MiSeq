@@ -1,4 +1,6 @@
-The root file for the project is named as "Ynsect-Fecal-microbial-2021"
+## Root direcotry
+
+For this projec is named as "Ynsect-Fecal-microbial-2021"
 
 Inside the project file, there are 3 files: data, results, src
 
@@ -13,7 +15,7 @@ Inside results folder, there are 2 folders: results, fastqc
 mkdir Ynsect-Fecal-microbial-2021
 cd Ynsect-Fecal-microbial-2021
 mkdir src data results
-# mkdir src/slurm-out
+mkdir src/slurm-out # optional
 mkdir data/reference data/raw-seq
 cd results
 mkdir dada2 fastqc
@@ -25,14 +27,15 @@ Store a copy the fastq file from MiSeq under data/raw-seq
 
 Always keep copy of the oringal files!
 
-- Download dada2 reference database under data/reference
+## Download reference database
+
+- Download dada2 reference database under data/reference:
   https://benjjneb.github.io/dada2/training.html
 
 Download databases:
 
-Silva version 138.1
-
-https://zenodo.org/record/4587955#.Y3VEnuzMKAk
+- Silva version 138.1:
+  https://zenodo.org/record/4587955#.Y3VEnuzMKAk
 
 Right click on silva_nr99_v138.1_train_set.fa.gz and select "Copy Link".
 
@@ -50,4 +53,4 @@ Next, do the same steps for silva_species_assignment_v138.1.fa.gz file
 wget https://zenodo.org/record/4587955/files/silva_species_assignment_v138.1.fa.gz
 ```
 
-Follow instruction in the Quality Check file next
+- Follow instruction in the Quality Check file next

@@ -1,7 +1,9 @@
 Inside src/ folder, store fastqc.sh file and sample name file "basenames-295-full.txt", note here 295 is the total number of samples in the file
 
-- Notice that the name in the basenames files has to be unique if using wild-card such as _ or ?.
-  For instance, if you have animal ID 1-1 and you use 1-1_, it will get 1-1, and 1-10, 1-11, etc
+- Notice that the name in the basenames files has to be unique if using wild-card such as \* or ?.
+  For instance, if you have animal ID 1-1 and you use 1-1\*, it will get 1-1, and 1-10, 1-11, etc
+
+### Fastqc
 
 fastqc.sh
 
@@ -36,6 +38,8 @@ echo "fastqc finished"
 
 ```
 
+Some comments on the code above:
+
 ```
 #SBATCH --array=1-295%5
 ```
@@ -46,9 +50,9 @@ Here %5 means run 5 job at a time from the 295 jobs
 #SBATCH -D /home/n-z/yifeik3/Ynsect2021_R/Ynsect-Fecal-microbial-2021/src/slurm-out
 ```
 
--D to set the direcotry for the slurm out files. Notice there is a `cd ..` command to move to back to the src/ folder since the direcotry is set to be /slurm.out
+- D to set the direcotry for the slurm out files. Notice there is a `cd ..` command to move to back to the src/ folder since the direcotry is set to be /slurm.out
 
--Fastqc itself can actually be given multiple fastq files and you could run it as a single job without using a job array (#SBATCH –array line in fastqc.sh) or setting up a line variable by doing:
+- Fastqc itself can actually be given multiple fastq files and you could run it as a single job without using a job array (#SBATCH –array line in fastqc.sh) or setting up a line variable by doing:
 
 `fastqc -o ../results/fastqc/ ../data/raw-seq/fecal-dataset/*.fastq`
 
@@ -60,3 +64,38 @@ ls *R1.fastq > ../../../src/basenames-295-full.txt
 cd ../../../src/
 sed -i 's/R1.fastq//' basenames-295-full.txt
 ```
+
+### MultiQC report
+
+- Log on to an interactive node to do work
+  `srun --pty /bin/bash`
+
+Then your location will change from "yifeik3@biologin-1 src" to "yifeik3@compute-7-2 src"
+
+- Remove all modules & then load the MultiQC module
+
+To check the most up to date module, use `module avail multiqc`, The output with (D) is Default Module.
+
+Here it is "MultiQC/1.11-IGB-gcc-8.2.0-Python-3.7.2"
+
+```
+module purge
+module load MultiQC/1.11-IGB-gcc-8.2.0-Python-3.7.2
+```
+
+- Move to the correct folder and then run MultiQC on the folder containing the FASTQC files you just generated
+
+```
+cd ~/Ynsect2021_R/Ynsect-Fecal-microbial-2021/results/fastqc/
+multiqc .
+```
+
+Then download the MultiQC html report from cyberduck.
+
+Under "Sequence Quality Histograms", pick the position for score greater than 30 (score 30 means Base call accuracy 99.9%).
+
+The green lines are forward reads, and yellow lines are reverse reads, typically forwards reads has higher quality than reverse reads.
+
+Therefore, usually the cutoff for forward is 250, and reverse is 200. Will use these two numbers for downstream trimming.
+
+- Moving to R code in the next step
