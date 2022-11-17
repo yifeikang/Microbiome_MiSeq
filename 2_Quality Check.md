@@ -1,3 +1,5 @@
+### Basename sample file
+
 Inside src/ folder, store fastqc.sh file and sample name file "basenames-295-full.txt", note here 295 is the total number of samples in the file
 
 - Notice that the name in the basenames files has to be unique if using wild-card such as \* or ?.

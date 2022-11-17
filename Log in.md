@@ -25,4 +25,4 @@ ssh yifeik3@biologin.igb.illinois.edu
 
 Then type password
 
--After finish your work, type `exit` to log out
+- After finish your work, type `exit` to log out
