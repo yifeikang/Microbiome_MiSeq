@@ -10,7 +10,7 @@ Ynsect-Fecal-microbial-2021:
 
 Saro2022:
 
-5 treatment groups, n=7-8, 39 cecal samples + 156 fecal samples, fecal samples repeated collected at wk1, wk2, wk3, wk4
+196 samples in total, 5 treatment groups, n=7-8, 39 cecal samples + 156 fecal samples, fecal samples repeated collected at wk1, wk2, wk3, wk4
 
 ### Sequencing information
 

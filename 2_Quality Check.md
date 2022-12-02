@@ -153,7 +153,7 @@ Then download the MultiQC html report from cyberduck.
 
 Under "Sequence Quality Histograms", pick the position for score greater than 30 (score 30 means Base call accuracy 99.9%).
 
-The green lines are forward reads, and yellow lines are reverse reads, typically forwards reads has higher quality than reverse reads.
+The green lines are forward reads, and red lines are reverse reads, typically forwards reads has higher quality than reverse reads.
 
 Therefore, usually the cutoff for forward is 250, and reverse is 200. Will use these two numbers for downstream trimming.
 
