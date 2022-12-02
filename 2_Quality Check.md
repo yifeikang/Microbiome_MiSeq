@@ -5,9 +5,59 @@ Inside src/ folder, store fastqc.sh file and sample name file "basenames-295-ful
 - Notice that the name in the basenames files has to be unique if using wild-card such as \* or ?.
   For instance, if you have animal ID 1-1 and you use 1-1\*, it will get 1-1, and 1-10, 1-11, etc
 
+- Get basenames
+
+  cd to raw-seq folder, then run `ls *R1.fastq > ../../src/basenames-196.txt`. This will input all the file names in raw-seq folder into the basenames-196.txt, but now all the name ends with "R1.fastq", which will be remove by the following command
+
+  ```
+  cd ../../src
+  sed -i 's/R1.fastq//' basenames-196.txt
+  ```
+
+  The resulting basenames file will have sample ID + bar code information. You should run the next step inside `src/' folder.
+
+  In terminal created nano file by typing `nano`, then copy the following file and edit information for your samples as needed.
+
+  Submit job by running `sbatch fastqc.sh`
+
 ### Fastqc
 
 fastqc.sh
+
+- For Saro project:
+
+```
+
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 12
+#SBATCH --mail-user=yifeik3@illinois.edu
+#SBATCH --mail-type=END,FAIL
+#SBATCH -J raw-fastqc
+#SBATCH --array=1-196%5
+#SBATCH -D /home/n-z/yifeik3/Saro2022/src/slurm-out/
+#SBATCH -p normal
+
+## MAKE SURE TO REPLACE THE 'X's ABOVE WITH YOUR INFORMATION (there are two places to do this)
+
+cd ..
+
+#Load the program needed; name may change in future so check each time with 'module avail FastQC'
+# on command line
+module load FastQC/0.11.8-Java-1.8.0_152
+
+#Set up variable to pull base file names and make output directory
+line=$(sed -n -e "$SLURM_ARRAY_TASK_ID p" basenames-196.txt)
+
+#Can use echo statements to put into .out files to help check on progress and diagnose
+# locations of problems
+echo "starting fastqc"
+fastqc -o ../results/fastqc/ ../data/raw-seq/${line}R1.fastq ../data/raw-seq/${line}R2.fastq
+echo "fastqc finished"
+
+```
+
+- For Ynsect project:
 
 ```
 #!/bin/bash
@@ -89,6 +139,13 @@ module load MultiQC/1.11-IGB-gcc-8.2.0-Python-3.7.2
 
 ```
 cd ~/Ynsect2021_R/Ynsect-Fecal-microbial-2021/results/fastqc/
+multiqc .
+```
+
+- For the Saro2022 project
+
+```
+cd ~/Saro2022/results/fastqc/
 multiqc .
 ```
 

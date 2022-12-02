@@ -21,7 +21,7 @@ cd results
 mkdir dada2 fastqc
 ```
 
-From Ynsect-Fecal-microbial-2021/, Saoro2022/ type`tree`to confirm the stucture of the directory
+From Ynsect-Fecal-microbial-2021/ or Saoro2022/ type`tree`to confirm the stucture of the directory
 
 Store a copy the fastq file from MiSeq under data/raw-seq
 
@@ -29,7 +29,7 @@ Always keep copy of the oringal files!
 
 ## Unzip files
 
-Insdie OriginalFiles/ folder, follow instructions from sequencing center's email to download files.
+Inside OriginalFiles/ folder, follow instructions from sequencing center's email to download files.
 
 Submit slurm job by nano file to unzip folder. DO NOT unzip the file on the login node of biocluster! Only unzip one file at a time, and rename the folder before unzip another
 
@@ -54,6 +54,8 @@ Rename the unziped folder "PrimerSortedDemultiplexed", and make a copy of the fi
 
 ## Download reference database
 
+First move the reference folder `cd data/reference/`
+
 - Download dada2 reference database under data/reference:
   https://benjjneb.github.io/dada2/training.html
 
@@ -70,7 +72,7 @@ In the Biocluster terminal type “wget “, then paste link, delete the “?dow
 wget https://zenodo.org/record/4587955/files/silva_nr99_v138.1_train_set.fa.gz
 ```
 
-Make sure you are on a login node!
+Make sure you are on a login node to get interenet connection!
 
 Next, do the same steps for silva_species_assignment_v138.1.fa.gz file
 
@@ -78,4 +80,4 @@ Next, do the same steps for silva_species_assignment_v138.1.fa.gz file
 wget https://zenodo.org/record/4587955/files/silva_species_assignment_v138.1.fa.gz
 ```
 
-- Follow instruction in the Quality Check file next
+- Next, follow instructions in the Quality Check step

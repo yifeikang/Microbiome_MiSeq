@@ -2,10 +2,10 @@
 
 https://help.igb.illinois.edu/Biocluster#Application_Lists
 
-When first log in, the Terminal, the ID will be shown as "netid@biologin-1 ~", this means you're on the login node.
+When first log in on the Terminal, the ID will be shown as "netid@biologin-1 ~", this means you're on the login node.
 Please note that only run sbatch file when you're on login node.
 
-When you are going to do interactive work such as running R script, you mush log in to a work node, after login to the worker node, the ID will be shown as "netid@compute-0-2 ~"
+When you are going to do interactive work such as running R script, or unzip files, you mush log in to a work node, after login to the worker node, the ID will be shown as "netid@compute-0-2 ~"
 
 - To login to the worker node, type the follow code in termial to start interactive session:
 
