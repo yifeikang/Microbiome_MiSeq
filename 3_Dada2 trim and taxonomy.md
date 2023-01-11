@@ -19,6 +19,7 @@
 ## Load packages
 
 - Install package, this only need to be done once
+- No need to run this on biocluster, because the packages are already installed
 
 ```
 BiocManager::install('dada2')
@@ -55,7 +56,7 @@ list.files(path)
 - Make sure the lengths are the same
 
 ```
-length(fnF) == length(fnR)
+    length(fnF) == length(fnR)
 ```
 
 ### Extract sample names
@@ -63,7 +64,9 @@ length(fnF) == length(fnR)
 - Assuming filenames have format: SAMPLENAME_R1.fastq, eg."V4_515F_New_V4_806R_New-C_L5_CTACATACTA_R2.fastq"
 - Sub means substitute, replace the `"\_R1.fastq"` with `""`
 
-`sample.file.names <- sub("\_R1.fastq", "", basename(fnF))`
+```
+   sample.file.names <- sub("\_R1.fastq", "", basename(fnF))
+```
 
 - The file name contains barcode, will edit next
 - Get sample names
@@ -111,16 +114,17 @@ filtR <- file.path("results/dada2/cecal_result/filtered", paste0(sample.names, "
 - Perform filtering
 
 ```
-out <- filterAndTrim(fnF, # paths to the input forward reads
-filtF, # paths to the output filtered forward reads
-fnR, # paths to the input reverse reads
-filtR, # paths to the output filtered reverse reads
-trimLeft=c(19,20), # 19 reads of the forward primer, 20 reads for reverse reads
-truncLen=c(250,200), # forward trim 250 and reverse trim 200
-maxN=0, # not alloweing any N in the read, this is the default setting
-maxEE=c(2,2), # more than 2 errors in the forward read, and reverse reads, espectively is removed, this is recommended by dada2
-rm.phix=TRUE, # remove phix reads
-multithread=10) # the number of CPUs requested, default is FALSE, if use TRUE, will use all the CPUs, don't use TRUE on biocluster
+out <- filterAndTrim(
+    fnF,   # paths to the input forward reads
+    filtF, # paths to the output filtered forward reads
+    fnR, # paths to the input reverse reads
+    filtR, # paths to the output filtered reverse reads
+    trimLeft=c(19,20), # 19 reads of the forward primer, 20 reads for reverse reads
+    truncLen=c(250,200), # forward trim 250 and reverse trim 200
+    maxN=0, # not alloweing any N in the read, this is the default setting
+    maxEE=c(2,2), # more than 2 errors in the forward read, and reverse reads, espectively is removed, this is recommended by dada2
+    rm.phix=TRUE, # remove phix reads
+    multithread=10) # the number of CPUs requested, default is FALSE, if use TRUE, will use all the CPUs, don't use TRUE on biocluster
 
 head(out)
 
@@ -132,9 +136,9 @@ head(out)
 - This step is the second most computationally intensive. This may not run on your personal computer.
 - NOTE: On Windows set multithread=FALSE.
 
-````errF <- learnErrors(filtF, multithread=10)
-errR <- learnErrors(filtR, multithread=10) # For multithread=10, takes 15min to run 39 samples```
-````
+```errF <- learnErrors(filtF, multithread=10)
+errR <- learnErrors(filtR, multithread=10) # For multithread=10, takes 15min to run 39 samples
+```
 
 - Plot errors to make sure everything looks as expected.
 
@@ -162,9 +166,10 @@ derepR <- derepFastq(filtR, verbose = TRUE)
 
 This step takes about 10-15min for 39 samples
 
-````dadaF <- dada(derepF, err=errF, multithread=10)
-dadaR <- dada(derepR, err=errR, multithread=10)```
-````
+```
+dadaF <- dada(derepF, err=errF, multithread=10)
+dadaR <- dada(derepR, err=errR, multithread=10)
+```
 
 ### Merge paired reads
 
@@ -184,18 +189,19 @@ head(mergers[[1]])
 
 - Make a sequence table
 
-  ```
-  seqtab <- makeSequenceTable(mergers)
-  dim(seqtab)
-  # Inspect distribution of sequence lengths (should be around size of V4 region)
-  table(nchar(getSequences(seqtab)))
+```
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab)
 
-  ```
+# Inspect distribution of sequence lengths (should be around size of V4 region)
+table(nchar(getSequences(seqtab)))
+
+```
 
 ### Remove chimeras
 
 - Chimeras are a mistake that happens during PCR where to different sequences merge together to form a hybrid sequence. This are easier to identify after all filtering has happened.
-- This is not unusual for chimeras number to be large (eb. ~20%), and sometimes they might make up a majority. The number of non-chimeras greater than 40% is generallly fine
+- This is not unusual for chimeras number to be large (eg. ~20%), and sometimes they might make up a majority
 
 ```
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=10, verbose=TRUE)
@@ -217,9 +223,12 @@ write.table(seqtab.nochim,
 ```
 getN <- function(x) sum(getUniques(x))
 track <- cbind(out, sapply(dadaF, getN), sapply(dadaR, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+
 # If processing a single sample, remove the sapply calls: e.g. replace sapply(dadaFs, getN) with getN(dadaFs)
+
 colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
 rownames(track) <- sample.names
+
 head(track)
 ```
 
@@ -230,24 +239,26 @@ head(track)
 ### Step 1: Assign taxonomy through genus
 
 ```
-taxa <- assignTaxonomy(seqtab.nochim,
-"data/reference/silva_nr99_v138.1_train_set.fa.gz",
-multithread=10
+taxa <- assignTaxonomy(
+    seqtab.nochim,
+    "data/reference/silva_nr99_v138.1_train_set.fa.gz",
+    multithread=10
 )
 ```
 
 ### Step 2: Assign species if 100% match
 
 ```
-taxa <- addSpecies(taxa,
-"data/reference/silva_species_assignment_v138.1.fa.gz"
+taxa <- addSpecies(
+    taxa,
+    "data/reference/silva_species_assignment_v138.1.fa.gz"
 )
 ```
 
 ### Preview of results
 
 ```
-taxa.print <- taxa # Removing sequence row names for display only
+taxa.print <- taxa  # Removing sequence row names for display only
 rownames(taxa.print) <- NULL
 head(taxa.print)
 ```
@@ -256,10 +267,11 @@ head(taxa.print)
 
 ```
 # write to file
-write.table(taxa,
-file = "results/dada2/cecal_result/taxa.txt",
-quote = FALSE,
-sep = "\t",
+write.table(
+    taxa,
+    file = "results/dada2/cecal_result/taxa.txt",
+    quote = FALSE,
+    sep = "\t",
 )
 
 # save as RDS file
