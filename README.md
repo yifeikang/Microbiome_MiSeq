@@ -17,3 +17,8 @@ Saro2022:
 - Primer: bacteria V4 region
 - Sequencing option: MiSeq bulk 2 x 300 bp V3 (20M - 40M paried reads)
 - Sample source: gut
+
+### References
+
+- HPCbio microbial workshop, UIUC
+- PATH 592 class note, Dr. Christopher Gaulke, UIUC
