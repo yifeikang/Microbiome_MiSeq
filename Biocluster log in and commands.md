@@ -1,3 +1,32 @@
+### Biocluster login: (Mac user)
+
+Open Terminal
+ssh netid@biologin.igb.illinois.edu
+
+```
+ssh yifeik3@biologin.igb.illinois.edu
+```
+
+Then type password
+
+- After finish your work, type `exit` to log out
+
+### Cyberduck login:
+
+Choose option SFTP(SSH)
+
+Server:
+
+```
+biologin.igb.illinois.edu
+```
+
+Username (your NetId):
+
+```
+yifeik3
+```
+
 ### Biocluster help page
 
 https://help.igb.illinois.edu/Biocluster#Application_Lists

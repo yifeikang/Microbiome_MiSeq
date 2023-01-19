@@ -2,7 +2,7 @@
 
 - Because this project include samples from both fecal samples and cecal digesta samples, and I have different metadata files for them, I will put the fastq files of them in seperate folders for easy analysis for future steps
 - I use cyberduck to move files, this can also be done using terminal.
-- Inside `dada/raw-seq` folder, create folder `Fecal-raw-seq` and `Cecal-raw-seq`, and move the fecal samples into `Fecal-raw-seq` folder, and cecal samples into `Cecal-raw-seq` folder. Note here I did not move the fecal w1_f8 sample to the fecal folder because there was no data of that animal in other weeks, and I'm not going to use this data for other analysis
+- Inside `dada/raw-seq` folder, create folder `Fecal-raw-seq` and `Cecal-raw-seq`, and move the fecal samples into `Fecal-raw-seq` folder, and cecal samples into `Cecal-raw-seq` folder.
 - Also, create a result folder for cecal project `dir.create("results/dada2/cecal_result")`. Do the same for the fecal project `dir.create("results/dada2/fecal_result")`. This can also be done on cyberduck
 
 ## Log onto Biocluster2 and open R session
@@ -79,7 +79,7 @@ list.files(path)
   sample.names <- paste(sample.trt,sample.num,sep ="\_")
   ```
 
-### Quality Control
+### Quality Control (optional, can skip this step)
 
 - Inspect read quality profiles using dada2.
 
@@ -136,9 +136,11 @@ head(out)
 - This step learns the error rates of your sequences for more accurate sample inference in the next step.
 - This step is the second most computationally intensive. This may not run on your personal computer.
 - NOTE: On Windows set multithread=FALSE.
+  This step takes 15min to run 39 samples
 
-```errF <- learnErrors(filtF, multithread=6)
-errR <- learnErrors(filtR, multithread=6) # takes 15min to run 39 samples
+```
+errF <- learnErrors(filtF, multithread=6)
+errR <- learnErrors(filtR, multithread=6)
 ```
 
 - Plot errors to make sure everything looks as expected.
@@ -164,8 +166,7 @@ derepR <- derepFastq(filtR, verbose = TRUE)
 ### Sample Inference
 
 - This is the core algorithm of dada2 that will infer real sequence variants from our unique sequences using the error models we generated to guide its decisions. See the dada2 publication for more details: https://doi.org/10.1038/nmeth.3869
-
-This step takes about 10-15min for 39 samples
+  This step takes about 10-15min for 39 samples
 
 ```
 dadaF <- dada(derepF, err=errF, multithread=6)
@@ -181,7 +182,6 @@ mergers <- mergePairs(
   dadaF, filtF,
   dadaR, filtR,
   verbose=TRUE
-  # minOverlap = 200 # optional, set the minimum overlap of our PE reads to 200
 )
 
 # Inspect the merger data.frame from the first sample
@@ -283,13 +283,21 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
 
 ```
 
-- To run above code all at once, we can use slurm submission
+### Running R script
+
+- To run above code all at once, we can use slurm submission on the login node, or running R script on an interactive node
+  I would run a small subset of samples step by step first to make sure the code is working before running everything at once
 - Prepare all the code in R script format, put it under `src/cecal_src/`, name it `dada2_cecal_slurm`
-  `Rscript src/cacal_src/dada2_cecal_slurm`
+  Start an interactive node first if haven't done so. `srun --pty /bin/bash`.
+
+  ```
+  Rscript src/cacal_src/dada2_cecal_slurm
+
+  ```
 
 - Alternatively, this can be done on a login node using slurm job submission
 
-  Create a slurm job, name the file `dada2-cecal` under `/home/n-z/yifeik3/Ynsect2021/`
+  Create a slurm job, name the file `dada2-cecal` under `/home/n-z/yifeik3/Saro2022/`
 
 ```
 #!/bin/bash
@@ -301,10 +309,14 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
 #SBATCH --mail-user=yifeik3@illinois.edu
 #SBATCH --mail-type=ALL
 #SBATCH -J dada2-script
-#SBATCH -D /home/n-z/yifeik3/Ynsect2021/
+#SBATCH -D /home/n-z/yifeik3/Saro2022/
 # ----------------Load Modules--------------------
 module load R/4.1.2-IGB-gcc-8.2.0
 # ----------------Commands------------------------
 Rscript src/cecal-src/dada2_cecal_slurm.R
 
 ```
+
+### Summary
+
+After this step, the work on biocluster is finished. All downstream analysis will be performed on personal computer using R.

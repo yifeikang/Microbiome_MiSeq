@@ -1,6 +1,6 @@
 ## Root direcotry
 
-For this projec is named as "Ynsect-Fecal-microbial-2021", "Saoro2022"
+For this projec is named as "Saoro2022"
 
 Inside the project file, there are 4 files: data, results, src, OriginalFiles
 
@@ -21,7 +21,7 @@ cd results
 mkdir dada2 fastqc
 ```
 
-From Ynsect-Fecal-microbial-2021/ or Saoro2022/ type`tree`to confirm the stucture of the directory
+From Saoro2022/, type`tree`to confirm the stucture of the directory
 
 Store a copy the fastq file from MiSeq under data/raw-seq
 
