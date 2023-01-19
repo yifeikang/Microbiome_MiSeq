@@ -12,8 +12,8 @@ Inside data folder, there are 2 folders: reference, raw-seq
 Inside results folder, there are 2 folders: results, fastqc
 
 ```
-mkdir Ynsect-Fecal-microbial-2021
-cd Ynsect-Fecal-microbial-2021
+mkdir Saro2022
+cd Saro2022
 mkdir src data results OriginalFiles
 mkdir src/slurm-out # optional
 mkdir data/reference data/raw-seq
