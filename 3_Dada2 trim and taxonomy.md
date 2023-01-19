@@ -1,13 +1,14 @@
 ## Organize sample fastq files for next step
 
 - Because this project include samples from both fecal samples and cecal digesta samples, and I have different metadata files for them, I will put the fastq files of them in seperate folders for easy analysis for future steps
-- I use cyberduck to move files, this can also be done using termial.
+- I use cyberduck to move files, this can also be done using terminal.
 - Inside `dada/raw-seq` folder, create folder `Fecal-raw-seq` and `Cecal-raw-seq`, and move the fecal samples into `Fecal-raw-seq` folder, and cecal samples into `Cecal-raw-seq` folder. Note here I did not move the fecal w1_f8 sample to the fecal folder because there was no data of that animal in other weeks, and I'm not going to use this data for other analysis
-- Also, create a result folder for cecal project `dir.create("results/dada2/cecal_result")`. Do the same for the fecal project `dir.create("results/dada2/cecal_result")`. This can also be done on cyberduck
+- Also, create a result folder for cecal project `dir.create("results/dada2/cecal_result")`. Do the same for the fecal project `dir.create("results/dada2/fecal_result")`. This can also be done on cyberduck
 
 ## Log onto Biocluster2 and open R session
 
 - Log on the the biocluster, and then log on to a new interactive node with the following command: `srun --pty /bin/bash`, then move to the working directory `cd Saro2022/`
+- To check availialbe module: `module avail`
 - Load the R module: `module load R/4.1.2-IGB-gcc-8.2.0`
 - Start running R: `R`
 - When finish coding, quit R: `q()`
@@ -115,16 +116,16 @@ filtR <- file.path("results/dada2/cecal_result/filtered", paste0(sample.names, "
 
 ```
 out <- filterAndTrim(
-    fnF,   # paths to the input forward reads
-    filtF, # paths to the output filtered forward reads
-    fnR, # paths to the input reverse reads
-    filtR, # paths to the output filtered reverse reads
-    trimLeft=c(19,20), # 19 reads of the forward primer, 20 reads for reverse reads
-    truncLen=c(250,200), # forward trim 250 and reverse trim 200
-    maxN=0, # not alloweing any N in the read, this is the default setting
-    maxEE=c(2,2), # more than 2 errors in the forward read, and reverse reads, espectively is removed, this is recommended by dada2
-    rm.phix=TRUE, # remove phix reads
-    multithread=10) # the number of CPUs requested, default is FALSE, if use TRUE, will use all the CPUs, don't use TRUE on biocluster
+    fnF,    # paths to the input forward reads
+    filtF,  # paths to the output filtered forward reads
+    fnR,    # paths to the input reverse reads
+    filtR,  # paths to the output filtered reverse reads
+    trimLeft=c(19,20),      # 19 reads of the forward primer, 20 reads for reverse reads
+    truncLen=c(250,200),    # forward trim 250 and reverse trim 200
+    maxN=0,         # not alloweing any N in the read, this is the default setting
+    maxEE=c(2,2),   # more than 2 errors in the forward read, and reverse reads, espectively is removed, this is recommended by dada2
+    rm.phix=TRUE,   # remove phix reads
+    multithread=6) # the number of CPUs requested, default is FALSE, if use TRUE, will use all the CPUs, don't use TRUE on biocluster
 
 head(out)
 
@@ -136,8 +137,8 @@ head(out)
 - This step is the second most computationally intensive. This may not run on your personal computer.
 - NOTE: On Windows set multithread=FALSE.
 
-```errF <- learnErrors(filtF, multithread=10)
-errR <- learnErrors(filtR, multithread=10) # For multithread=10, takes 15min to run 39 samples
+```errF <- learnErrors(filtF, multithread=6)
+errR <- learnErrors(filtR, multithread=6) # takes 15min to run 39 samples
 ```
 
 - Plot errors to make sure everything looks as expected.
@@ -167,8 +168,8 @@ derepR <- derepFastq(filtR, verbose = TRUE)
 This step takes about 10-15min for 39 samples
 
 ```
-dadaF <- dada(derepF, err=errF, multithread=10)
-dadaR <- dada(derepR, err=errR, multithread=10)
+dadaF <- dada(derepF, err=errF, multithread=6)
+dadaR <- dada(derepR, err=errR, multithread=6)
 ```
 
 ### Merge paired reads
@@ -204,15 +205,16 @@ table(nchar(getSequences(seqtab)))
 - This is not unusual for chimeras number to be large (eg. ~20%), and sometimes they might make up a majority
 
 ```
-seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=10, verbose=TRUE)
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=6, verbose=TRUE)
 dim(seqtab.nochim)
 sum(seqtab.nochim)/sum(seqtab) # 86%, this is good
 
 # Now we need to export these data so we can access them later.
-write.table(seqtab.nochim,
-            file = "results/dada2/cecal_result/seqtab_nochim.txt",
-            quote = FALSE,
-            sep = "\t",
+write.table(
+    seqtab.nochim,
+    file = "results/dada2/cecal_result/seqtab_nochim.txt",
+    quote = FALSE,
+    sep = "\t",
 )
 ```
 
@@ -242,7 +244,7 @@ head(track)
 taxa <- assignTaxonomy(
     seqtab.nochim,
     "data/reference/silva_nr99_v138.1_train_set.fa.gz",
-    multithread=10
+    multithread=6
 )
 ```
 
@@ -278,5 +280,31 @@ write.table(
 saveRDS(track, file = "results/dada2/cecal_result/summary-of-dada2.RDS")
 saveRDS(seqtab.nochim, file = "results/dada2/cecal_result/seqtab_final.RDS")
 saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
+
+```
+
+- To run above code all at once, we can use slurm submission
+- Prepare all the code in R script format, put it under `src/cecal_src/`, name it `dada2_cecal_slurm`
+  `Rscript src/cacal_src/dada2_cecal_slurm`
+
+- Alternatively, this can be done on a login node using slurm job submission
+
+  Create a slurm job, name the file `dada2-cecal` under `/home/n-z/yifeik3/Ynsect2021/`
+
+```
+#!/bin/bash
+# ----------------SLURM Parameters----------------
+#SBATCH -p normal
+#SBATCH -n 6
+#SBATCH --mem=16g
+#SBATCH -N 1
+#SBATCH --mail-user=yifeik3@illinois.edu
+#SBATCH --mail-type=ALL
+#SBATCH -J dada2-script
+#SBATCH -D /home/n-z/yifeik3/Ynsect2021/
+# ----------------Load Modules--------------------
+module load R/4.1.2-IGB-gcc-8.2.0
+# ----------------Commands------------------------
+Rscript src/cecal-src/dada2_cecal_slurm.R
 
 ```
