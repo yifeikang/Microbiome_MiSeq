@@ -291,7 +291,8 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
   I would run a small subset of samples step by step first to make sure the code is working before running everything at once
 
 - Prepare all the code in R script format, put it under `src/cecal_src/`, name it `dada2_cecal_slurm`
-  Start an interactive node first if haven't done so. `srun --pty /bin/bash`.
+
+  Start an interactive node first if haven't done so. `srun --pty /bin/bash`. Then run the following code
 
   ```
   Rscript src/cacal_src/dada2_cecal_slurm

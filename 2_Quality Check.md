@@ -11,7 +11,7 @@ Inside src/ folder, store fastqc.sh file and sample name file "basenames-196.txt
 
   ```
   cd ../../src
-  sed -i 's/R1.fastq//' basenames-196.txt
+  sed -i 's/R1.fastq/' basenames-196.txt
   ```
 
   The resulting basenames file will have sample ID + bar code information. You should run the next step inside `src/` folder.
