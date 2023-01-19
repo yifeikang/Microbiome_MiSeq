@@ -1,6 +1,6 @@
-## 16s_MiSeq
+### Microbiome_MiSeq
 
-This project provides information of analyzing 16s rRNA MiSeq data using R, and dada2
+This project provides information of analyzing 16s rRNA MiSeq data on UIUC biocluster (HPCbio) using R and dada2
 
 ### Sample information
 
