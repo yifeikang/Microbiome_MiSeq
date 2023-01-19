@@ -1,6 +1,6 @@
 ## Root direcotry
 
-For this projec is named as "Saoro2022"
+The name of this project is "Saoro2022"
 
 Inside the project file, there are 4 files: data, results, src, OriginalFiles
 

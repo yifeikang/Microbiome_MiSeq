@@ -14,7 +14,7 @@ Inside src/ folder, store fastqc.sh file and sample name file "basenames-196.txt
   sed -i 's/R1.fastq//' basenames-196.txt
   ```
 
-  The resulting basenames file will have sample ID + bar code information. You should run the next step inside `src/' folder.
+  The resulting basenames file will have sample ID + bar code information. You should run the next step inside `src/` folder.
 
   In terminal created nano file by typing `nano`, then copy the following file and edit information for your samples as needed.
 
@@ -54,7 +54,7 @@ echo "fastqc finished"
 
 ```
 
-Some comments on the code above:
+#### Some comments on the code above
 
 ```
 #SBATCH --array=1-196%5
@@ -63,7 +63,7 @@ Some comments on the code above:
 Here %5 means run 5 job at a time from the 196 jobs
 
 ```
-#SBATCH -D //home/n-z/yifeik3/Saro2022/src/slurm-out/
+#SBATCH -D /home/n-z/yifeik3/Saro2022/src/slurm-out/
 ```
 
 - `-D` to set the direcotry for the slurm out files. Notice there is a `cd ..` command to move to back to the src/ folder since the direcotry is set to be /slurm.out
@@ -114,4 +114,4 @@ The green lines are forward reads, and red lines are reverse reads, typically fo
 
 Therefore, usually the cutoff for forward is 250, and reverse is 200. Will use these two numbers for downstream trimming.
 
-- Moving to R code in the next step
+- Moving to dada2 and R code in the next step

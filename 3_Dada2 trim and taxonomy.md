@@ -20,7 +20,8 @@
 ## Load packages
 
 - Install package, this only need to be done once
-- No need to run this on biocluster, because the packages are already installed
+
+  No need to run this on biocluster, because the packages are already installed
 
 ```
 BiocManager::install('dada2')
@@ -83,7 +84,7 @@ list.files(path)
 
 - Inspect read quality profiles using dada2.
 
-Note: We already did this using FASTQC and MultiQC, but let's see what the dada2 version looks like
+  Note: We already did this using FASTQC and MultiQC, but let's see what the dada2 version looks like
 
 - We can use ggsave() to save it to a specific place and filename
 
@@ -283,16 +284,17 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
 
 ```
 
-### Running R script
+### Running R script (optional)
 
 - To run above code all at once, we can use slurm submission on the login node, or running R script on an interactive node
+
   I would run a small subset of samples step by step first to make sure the code is working before running everything at once
+
 - Prepare all the code in R script format, put it under `src/cecal_src/`, name it `dada2_cecal_slurm`
   Start an interactive node first if haven't done so. `srun --pty /bin/bash`.
 
   ```
   Rscript src/cacal_src/dada2_cecal_slurm
-
   ```
 
 - Alternatively, this can be done on a login node using slurm job submission
@@ -314,9 +316,8 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
 module load R/4.1.2-IGB-gcc-8.2.0
 # ----------------Commands------------------------
 Rscript src/cecal-src/dada2_cecal_slurm.R
-
 ```
 
 ### Summary
 
-After this step, the work on biocluster is finished. All downstream analysis will be performed on personal computer using R.
+After this step, work on the biocluster part is finished. All downstream analysis will be performed on personal computer using R.
