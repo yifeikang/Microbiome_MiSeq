@@ -266,6 +266,10 @@ rownames(taxa.print) <- NULL
 head(taxa.print)
 ```
 
+### Phylogenetic tree (Optional)
+
+To be added
+
 ### Save final data
 
 ```
@@ -309,7 +313,7 @@ saveRDS(taxa, file = "results/dada2/cecal_result/taxonomy_final.RDS")
 #SBATCH -n 6
 #SBATCH --mem=16g
 #SBATCH -N 1
-#SBATCH --mail-user=yifeik3@illinois.edu
+#SBATCH --mail-user= email address
 #SBATCH --mail-type=ALL
 #SBATCH -J dada2-script
 #SBATCH -D /home/n-z/yifeik3/Saro2022/

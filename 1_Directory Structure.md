@@ -40,7 +40,7 @@ Submit slurm job by nano file to unzip folder. DO NOT unzip the file on the logi
 #SBATCH -n 24
 #SBATCH --mem=700g
 #SBATCH -N 1
-#SBATCH --mail-user yifeik3@illinois.edu
+#SBATCH --mail-user email address
 #SBATCH --mail-type END, FAIL
 #SBATCH -J unzip
 # ----------------Commands------------------------

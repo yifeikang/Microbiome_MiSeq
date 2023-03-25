@@ -29,7 +29,7 @@ Inside src/ folder, store fastqc.sh file and sample name file "basenames-196.txt
 #!/bin/bash
 #SBATCH -N 1
 #SBATCH -n 12
-#SBATCH --mail-user=yifeik3@illinois.edu
+#SBATCH --mail-user= email address
 #SBATCH --mail-type=END,FAIL
 #SBATCH -J raw-fastqc
 #SBATCH --array=1-196%5
@@ -86,7 +86,7 @@ sed -i 's/R1.fastq//' basenames-196.txt
 - Log on to an interactive node to do work
   `srun --pty /bin/bash`
 
-Then your location will change from "yifeik3@biologin-1 src" to "yifeik3@compute-7-2 src"
+Then your location will change from "netID@biologin-1 src" to "netID@compute-7-2 src"
 
 - Remove all modules & then load the MultiQC module
 
